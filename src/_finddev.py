@@ -20,5 +20,38 @@ def finddev():
     #         return dev
     #     else:
     #         return ""
-    return '/dev/ttyACM0'
+    #library for calling shell commands 
+    import subprocess
+    #first find the bus number and port number that Arduino resides on
+    proc = subprocess.Popen("dmesg | grep Arduino", stdout = subprocess.PIPE, shell = True)
+    line = proc.stdout.readline()
+    if line != '':
+        string = line.rstrip()
+        print "test_bus_port:", string
+    else:
+        print("ERROR: unable to find device file in file system.")
+        return ""
+    #extract bus_port number
+    pos_start = string.find("usb ")
+    pos_end = string.find(":")
+    bus_port = string[pos_start+4:pos_end]
+    #print(bus_port)
+    #search for the dev file information in kernel logs 
+    #dev will be either ttyUSB* or ttyACM*
+    cmd = 'dmesg | grep "' + bus_port + '"' + '| grep "tty"'
+    print(cmd) 
+    proc = subprocess.Popen(cmd, stdout = subprocess.PIPE, shell = True)
+    line = proc.stdout.readline()
+    if line != '':
+        string = line.rstrip()
+        print "test2:", string
+    else:
+        print("ERROR: unable to find device file in file system.")
+        return ""
+    pos_start = string.find("tty")
+    pos_end = string.find(":",pos_start)
+    dev = string[pos_start:pos_end] 
+    dev = "/dev/" + dev
+    print("testout:",dev) 
+    return dev
 

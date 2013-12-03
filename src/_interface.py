@@ -13,7 +13,9 @@ to checkout this example:
 
 You will probably need to remove a lot of the code below. The current
 functionality is just for the sake of example. """
-import wx
+import wx,os
+import wx.html2
+import _lesson
 
 # Create a new frame class, derived from the wxPython Frame.
 class MyFrame(wx.Frame):
@@ -24,52 +26,76 @@ class MyFrame(wx.Frame):
         # First, call the base class' __init__ method to create the frame
         wx.Frame.__init__(self, parent, ident, title)
         self.app = app # app.load needs to be called to load program
+        self.Centre()
+        self.SetSize((900, 700))
         self.lessons = lessons
+        self.currentLesson = self.lessons[0]
 
-        # Associate some events with methods of this class
-        self.Bind(wx.EVT_SIZE, self.OnSize)
-        self.Bind(wx.EVT_MOVE, self.OnMove)
+        self.header = ReadFile('html/header.html')
+        self.footer = ReadFile('html/footer.html')
 
-        # Add a panel and some controls to display the size and position
-        panel = wx.Panel(self, -1)
-        label1 = wx.StaticText(panel, -1, "Size:")
-        label2 = wx.StaticText(panel, -1, "Pos:")
-        self.sizeCtrl = wx.TextCtrl(panel, -1, "", style=wx.TE_READONLY)
-        self.posCtrl = wx.TextCtrl(panel, -1, "", style=wx.TE_READONLY)
-        self.panel = panel
+        self.header = self.header.replace("{SRC}",os.path.dirname(os.path.realpath(__file__))+"/../html")
+        self.footer = self.footer.replace("{SRC}",os.path.dirname(os.path.realpath(__file__))+"/../html")
 
-        # Use some sizers for layout of the widgets
-        sizer = wx.FlexGridSizer(2, 2, 5, 5)
-        sizer.Add(label1)
-        sizer.Add(self.sizeCtrl)
-        sizer.Add(label2)
-        sizer.Add(self.posCtrl)
+        # Load the first lesson
+        self.html = wx.html2.WebView.New(self)
 
-        border = wx.BoxSizer()
-        border.Add(sizer, 0, wx.ALL, 15)
-        panel.SetSizerAndFit(border)
-        self.Fit()
+        self.SetLessonPage()
+        
+        self.Bind(wx.html2.EVT_WEBVIEW_NAVIGATING, self.onLinkClicked, self.html)
 
+    # When the html is being navigated
+    def onLinkClicked(self, event):
 
-    # This method is called by the System when the window is resized,
-    # because of the association above.
-    def OnSize(self, event):
-        """ Just for example. """
-        size = event.GetSize()
-        self.sizeCtrl.SetValue("%s, %s" % (size.width, size.height))
+        # when a new lesson is selected
+        if(event.GetURL().find("lesson") >= 0):
+            lesson_num = int(str(event.GetURL()).split("-")[1])
+            self.currentLesson = self.lessons[lesson_num]
+            self.SetLessonPage()
 
-        # tell the event system to continue looking for an event handler,
-        # so the default handler will get called.
-        event.Skip()
+        # When code is uploaded
+        elif(event.GetURL().find("run") >= 0):
+            self.GetFieldData(self.html.GetPageSource())
+            event.Veto()
 
-    # This method is called by the System when the window is moved,
-    # because of the association above.
-    def OnMove(self, event):
-        """ Just for example. """
-        pos = event.GetPosition()
-        self.posCtrl.SetValue("%s, %s" % (pos.x, pos.y))
+        # Prevent looping
+        if(event.GetURL() != None):
+            event.Veto()
 
+    # Build the html page with the header body and footer
+    def SetLessonPage(self):
+        page = str(self.header) + self.currentLesson.GetPageSource() + str(self.footer)
+        self.html.SetPage(page, "")
 
+    # Hack to retreive the submitted form data
+    def GetFieldData(self, source):
+        data = {}
+        split = source.split('<textarea')
+        postload = (len(split) == 1)
+        if(postload): split = source.split('<TEXTAREA')
+        for field in split[1:]:
+            if(postload):
+                key = field.split('id=')
+                if(len(key)>1): key = (field.split('id=')[1]).split(' ')[0]
+                else: key = "field-" + str(split.index(field)-1)
+                data[key] = ((field.split('>')[1]).split('</TEXTAREA>')[0][:-10])
+            else:
+                key = field.split('id="')
+                if(len(key)>1): key = (field.split('id="')[1]).split('"')[0]
+                else: key = "field-" + str(split.index(field)-1)
+                data[key] = ((field.split('>')[1]).split('</textarea>')[0][:-10])
+        print data
+        return data
+
+# Read data from a file
+def ReadFile(filepath):
+    try:
+        with open(filepath) as f:
+            content = f.readlines()
+        return '\r\n'.join(content)
+    except:
+        return False
+    
 if __name__ == '__main__':
     pass # test MyFrame
 

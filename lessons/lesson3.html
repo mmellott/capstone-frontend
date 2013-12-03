@@ -1,0 +1,47 @@
+<div class = "span9">
+<p>
+Now maybe you want a little more control over each dot of light.
+</p> 
+<p>Here's a new function: <code>colorpixel</code>.</p>
+
+<p><code>colorpixel</code> will turn on one dot - called a "pixel" - in the color of your choice. To do this, it needs to know <strong>5</strong> things:</p>
+
+            <ol>
+           		<li>
+            		The <strong>row</strong> your pixel is in (count down!)
+				</li>
+				<li>
+					The <strong>column</strong> your pixel is in (count across!)
+				</li>
+				<li>
+            		How much <strong>red</strong> light (remember, between 0 and 255)
+				</li>
+				<li>
+					How much <strong>blue</strong> light
+				</li>
+				<li>
+					How much <strong>green</strong> light
+				</li>
+            </ol>
+
+<p>Try this code out: <pre>colorpixel (row: 2, column: 3, red: 100, green: 0, blue: 100) </pre> </p>
+
+<p>Do you see a pixel that is not like the others? Now try changing the rows, columns, and colors to see what happens. You can even try more than one instruction, one after the other. Just put each one on its own line.</span> </p>
+
+<p>What happens if you upload this code? <pre>colorpixel (row: 10, column: 3, red: 100, green: 0, blue: 100) </pre> </p>
+
+<p>Nothing! There are only 5 rows, and that code tries to turn on a pixel in row 10 - which doesn't exist! </p>
+
+</div>
+
+<form action="run">
+     <h3 class = "span9">setup</h3>
+    <textarea id="main" class="span9" rows="5">{SAVE}</textarea>
+
+    <h3>loop</h3>
+    <textarea id="loop" class="span9" rows="10">{SAVE}</textarea>
+
+<div class="form-actions">
+    <button type="submit" class="btn btn-success">Upload</button>
+</div>
+</form>

@@ -55,7 +55,12 @@ class MyFrame(wx.Frame):
 
         # When code is uploaded
         elif(event.GetURL().find("run") >= 0):
-            self.GetFieldData(self.html.GetPageSource())
+            data = self.GetFieldData(self.html.GetPageSource())
+            if(len(data) > 0): main = data[data.keys()[0]]
+            else: main = ""
+            if(len(data) > 0): loop = data[data.keys()[0]]
+            else: loop = ""
+            self.app.load(main, loop) 
             event.Veto()
 
         # Prevent looping

@@ -27,7 +27,7 @@ def finddev():
     line = proc.stdout.readline()
     if line != '':
         string = line.rstrip()
-        print "test_bus_port:", string
+        print "bus & port:", string
     else:
         print("ERROR: unable to find device file in file system.")
         return ""
@@ -39,19 +39,19 @@ def finddev():
     #search for the dev file information in kernel logs 
     #dev will be either ttyUSB* or ttyACM*
     cmd = 'dmesg | grep "' + bus_port + '"' + '| grep "tty"'
-    print(cmd) 
+    #print(cmd) 
     proc = subprocess.Popen(cmd, stdout = subprocess.PIPE, shell = True)
     line = proc.stdout.readline()
     if line != '':
         string = line.rstrip()
-        print "test2:", string
+        print ":", string
     else:
         print("ERROR: unable to find device file in file system.")
-        return ""
+        return "dev file:"
     pos_start = string.find("tty")
     pos_end = string.find(":",pos_start)
     dev = string[pos_start:pos_end] 
     dev = "/dev/" + dev
-    print("testout:",dev) 
+    #print("testout:",dev) 
     return dev
 

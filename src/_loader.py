@@ -10,7 +10,7 @@ def waitprompt(c):
 
 def makeprg(setup, loop):
     """ We can only handle one line prgs with no setup right now... """
-    return ('while 1 { %stwinkle(); }\n' % (loop))
+    return loop
 
 def load(device, baud, program):
     """ Load a bitlash program onto the Arduino. """
@@ -33,7 +33,7 @@ def load(device, baud, program):
                 print("waiting for prompt after twinkle")
     else:
         #program is one line
-        if (len(program) > 0) and (line[0] != '#'):
+        if (len(program) > 0) and (program[0] != '#'):
             c.sendline(program)
             waitprompt(c)
     c.close()

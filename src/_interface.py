@@ -53,7 +53,7 @@ class MyFrame(wx.Frame):
         # When code is uploaded
         elif(len(event.GetURL()) > 0):
             event.Veto()
-            self.app.load(event.GetURL(), "") 
+            self.app.load(event.GetURL(), event.GetURL()) 
             """data = self.GetFieldData(self.html.GetPageSource())
             if(len(data) > 0): main = data[data.keys()[0]]
             else: main = ""

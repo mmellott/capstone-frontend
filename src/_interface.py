@@ -43,7 +43,7 @@ class MyFrame(wx.Frame):
 
     # When the html is being navigated
     def onLinkClicked(self, event):
-
+        
         # when a new lesson is selected
         if(event.GetURL().find("lesson") >= 0):
             lesson_num = int(str(event.GetURL()).split("-")[1])
@@ -51,14 +51,16 @@ class MyFrame(wx.Frame):
             self.SetLessonPage()
 
         # When code is uploaded
-        elif(event.GetURL().find("run") >= 0):
-            data = self.GetFieldData(self.html.GetPageSource())
+        elif(len(event.GetURL()) > 0):
+            event.Veto()
+            self.app.load(event.GetURL(), "") 
+            """data = self.GetFieldData(self.html.GetPageSource())
             if(len(data) > 0): main = data[data.keys()[0]]
             else: main = ""
             if(len(data) > 1): loop = data[data.keys()[1]]
             else: loop = ""
             self.app.load(main, loop) 
-            event.Veto()
+            event.Veto()"""
 
         # Prevent looping
         if(event.GetURL() != None):

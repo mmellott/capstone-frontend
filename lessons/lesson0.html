@@ -8,10 +8,10 @@
 
 <p>Hooray! In the next few lessons, you'll learn how to customize the way the tile twinkles.</p>
 
-<form method="GET" action="run">
-    <TEXTAREA id="main" class="span9" rows="20">{SAVE}</TEXTAREA>
+<form name="mform" method="GET" action="run">
+    <textarea id="main" class="span9" rows="20">{SAVE}</textarea>
     <div class="form-actions">
-        <button type="submit" class="btn btn-success">Upload</button>
+        <button type="submit" class="btn btn-success" onclick="document.mform.action=document.getElementById('main').innerHTML;">Upload</button>
     </div>
 </form>
 

@@ -31,12 +31,9 @@ class MyFrame(wx.Frame):
         self.lessons = lessons
         self.currentLesson = self.lessons[0]
 
-        self.header = ReadFile('html/header.html')
-        self.footer = ReadFile('html/footer.html')
-
-        self.header = self.header.replace("{SRC}",os.path.dirname(os.path.realpath(__file__))+"/../html")
-        self.footer = self.footer.replace("{SRC}",os.path.dirname(os.path.realpath(__file__))+"/../html")
-
+        self.header = self.HackStyle(ReadFile('html/header.html'))
+        self.footer = self.HackStyle(ReadFile('html/footer.html'))
+        
         # Load the first lesson
         self.html = wx.html2.WebView.New(self)
 
@@ -71,6 +68,7 @@ class MyFrame(wx.Frame):
     def SetLessonPage(self):
         page = str(self.header) + self.currentLesson.GetPageSource() + str(self.footer)
         self.html.SetPage(page, "")
+        
 
     # Hack to retreive the submitted form data
     def GetFieldData(self, source):
@@ -91,6 +89,28 @@ class MyFrame(wx.Frame):
                 data[key] = ((field.split('>')[1]).split('</textarea>')[0][:-10])
         print data
         return data
+
+    def HackStyle(self, source):
+
+        style = source.split("<link ")
+        for element in style:
+            if(element.find(">") < element.find('href="') or element.find('href="') == -1):
+                continue
+            part = element.split(">")[0]
+            src = (part.split('href="')[1]).split('"')[0]
+
+            source = source[:source.find(part)-6]+'<style type="text/css">'+str(ReadFile("html"+src))+'</style>'+source[source.find(part)+len(part)+1:]
+
+        style = source.split('<script ')
+        for element in style:
+            if(element.find(">") < element.find('src="') or element.find('src="') == -1):
+                continue
+            part = element.split(">")[0]
+            src = (part.split('src="')[1]).split('"')[0]
+
+            source = source[:source.find(part)-8]+'<script type="text/javascript">'+str(ReadFile("html"+src))+'</script>'+source[source.find(part)+len(part)+1:]
+            
+        return source
 
 # Read data from a file
 def ReadFile(filepath):

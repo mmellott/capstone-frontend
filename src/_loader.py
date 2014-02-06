@@ -1,7 +1,11 @@
 #!/usr/bin/python
 """ Functions in here handle loading bitlash programs onto the Arduino. """
 # import _error # might need this if we actually caught exceptions?
-import serial, fdpexpect, time
+try: import serial
+except Exception: print "NO SERIAL MODULE DETECTED"
+try: import fdpexpect
+except Exception: print "NO FDPEXPECT MODULE DETECTED"
+import time
 
 def waitprompt(c):
     """ Wait until we see a prompt. """

@@ -51,7 +51,13 @@ def finddev():
     pos_start = string.find("tty")
     pos_end = string.find(":",pos_start)
     dev = string[pos_start:pos_end] 
-    dev = "/dev/" + dev
+    dev_full = "/dev/" + dev
+    cmd = "ls " + "/dev/"  + "| grep " + dev
+    proc = subprocess.Popen(cmd, stdout = subprocess.PIPE, shell = True)
+    line = proc.stdout.readline()
+    if (line == "")
+        print "ERROR the device is unplugged. Plug in the device."
+        return -1
     #print("testout:",dev) 
     return dev
 

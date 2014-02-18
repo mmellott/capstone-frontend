@@ -1,12 +1,6 @@
 #!/usr/bin/python
 import Tkinter as tk
 
-def add_scrollbar(widget):
-	scrollbar = tk.Scrollbar(widget)
-	scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-	scrollbar.config(command=widget.yview)
-
-
 class Application(tk.Frame):
 	def __init__(self, master=None):
 		tk.Frame.__init__(self, master)
@@ -41,7 +35,7 @@ class Application(tk.Frame):
 
 		## editor group 
 		# widgets
-		editor_group = tk.LabelFrame(self, text="Editor")
+		editor_group = tk.Frame(self)
 
 		sbars = []
 		for i in range(2):
@@ -76,7 +70,7 @@ class Application(tk.Frame):
 		sbars[1].grid(row=1, column=1, sticky=tk.N+tk.S, padx=(0,5), pady=(0,5))
 
 		## lesson group 
-		lesson_group = tk.LabelFrame(self, text="Lessons", padx=5, pady=5)
+		lesson_group = tk.Frame(self, padx=5, pady=5)
 
 		self.lesson_listbox = tk.Listbox(lesson_group)
 		self.lesson_listbox.insert(tk.END, "Sandbox Mode") # at index 0

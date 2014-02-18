@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/python
 import Tkinter as tk
 
 def add_scrollbar(widget):
